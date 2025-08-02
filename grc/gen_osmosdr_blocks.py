@@ -163,6 +163,7 @@ documentation: |-
    * gnuradio .cfile input through libgnuradio-blocks
    * RFSPACE SDR-IQ, SDR-IP, NetSDR (incl. X2 option)
    * AirSpy Wideband Receiver through libairspy
+   * HydraSDR Wideband Receiver through libhydrasdr
   % endif
   % if sourk == 'sink':
    * gnuradio .cfile output through libgnuradio-blocks
@@ -202,6 +203,7 @@ documentation: |-
     cloudiq=127.0.0.1[:50000]
     sdr-iq=/dev/ttyUSB0
     airspy=0[,bias=0|1][,linearity][,sensitivity]
+    hydrasdr=0[,bias=0|1][,linearity][,sensitivity]
   % endif
   % if sourk == 'sink':
     file='/path/to/your file',rate=1e6[,freq=100e6][,append=true][,throttle=true] ...
