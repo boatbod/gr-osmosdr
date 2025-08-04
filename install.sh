@@ -15,8 +15,8 @@ fi
 GR_OSMOSDR=$(apt list gr-osmosdr 2>/dev/null | grep -o '\[.**\]')
 echo "Checking for gr-osmosdr package ${GR_OSMOSDR}"
 if [ "${GR_OSMOSDR}" != "" ]; then
-    echo "The gr-osmosdr package is presently installed. Please remove it before"
-    echo "re-running this install script."
+    echo "The gr-osmosdr package is presently installed."
+    echo "Please remove it before running this install script."
     exit 1
 fi
 
