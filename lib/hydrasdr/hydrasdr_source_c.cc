@@ -97,11 +97,23 @@ hydrasdr_source_c::hydrasdr_source_c (const std::string &args)
     _bandwidth(0)
 {
   int ret;
-
+  _dev = NULL;
   dict_t dict = params_to_dict(args);
 
-  _dev = NULL;
-  ret = hydrasdr_open( &_dev );
+  // the block below allows one to open hydrasdr by serial number
+  // 2016-Apr-5 - by Lawrence Glaister VE7IT  ve7it@shaw.ca
+  // (allowing multiple hydrasdr source blocks to be used) Note: each hydrasdr should be
+  // plugged into its own USB bus controller to support the high data rates involved.
+  // osmocom Source block usage: Device arguments:  hydrasdr=0x644064DC317C1FCD
+  // if no device arguments are given or s/n=0, the first found hydrasdr device will be used
+  // use hydrasdr_info utility to identify device serial number strings
+  uint64_t sn;
+  std::stringstream ss;
+  ss << std::hex << dict["hydrasdr"];
+  ss >> sn;
+  std::cerr << "Attempting to open hydrasdr by s/n= "
+            <<  boost::format("0x%016X") % (sn) << std::endl;
+  ret = hydrasdr_open_sn( &_dev, sn );
   HYDRASDR_THROW_ON_ERROR(ret, "Failed to open HydraSDR device")
 
   uint8_t board_id;
@@ -112,11 +124,15 @@ hydrasdr_source_c::hydrasdr_source_c (const std::string &args)
   memset(version, 0, sizeof(version));
   ret = hydrasdr_version_string_read( _dev, version, sizeof(version));
   HYDRASDR_THROW_ON_ERROR(ret, "Failed to read version string")
-#if 0
+
   hydrasdr_read_partid_serialno_t part_serial;
   ret = hydrasdr_board_partid_serialno_read( _dev, &part_serial );
   HYDRASDR_THROW_ON_ERROR(ret, "Failed to read serial number")
-#endif
+  std::cerr << "Opened Device Serial Number=    "
+    << boost::format("0x%08X") % (part_serial.serial_no[2])
+    << boost::format("%08X")   % (part_serial.serial_no[3])
+    << std::endl;
+
   uint32_t num_rates;
   hydrasdr_get_samplerates(_dev, &num_rates, 0);
   uint32_t *samplerates = (uint32_t *) malloc(num_rates * sizeof(uint32_t));
