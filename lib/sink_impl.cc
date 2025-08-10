@@ -109,7 +109,7 @@ sink_impl::sink_impl( const std::string &args )
   dev_types.push_back("file");
 #endif
 
-  std::cerr << "gr-osmosdr "
+  std::cerr << "gr-osmosdr (boatbod) "
             << GR_OSMOSDR_VERSION << " (" << GR_OSMOSDR_LIBVER << ") "
             << "gnuradio " << gr::version() << std::endl;
   std::cerr << "built-in sink types: ";
