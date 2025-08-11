@@ -98,6 +98,8 @@ airspy_source_c::airspy_source_c (const std::string &args)
   int ret;
   _dev = NULL;
   dict_t dict = params_to_dict(args);
+  if (dict["airspy"] == "")
+    dict["airspy"] = "0";
 
   // the block below allows one to open airspy by serial number
   // 2016-Apr-5 - by Lawrence Glaister VE7IT  ve7it@shaw.ca
