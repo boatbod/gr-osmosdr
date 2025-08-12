@@ -44,7 +44,7 @@ GR_SWIG_MAKE(osmosdr_swig osmosdr_swig.i)
 ########################################################################
 # Install the build swig module
 ########################################################################
-GR_SWIG_INSTALL(TARGETS osmosdr_swig DESTINATION ${GR_PYTHON_DIR}/osmosdr)
+GR_SWIG_INSTALL(TARGETS osmosdr_swig DESTINATION ${OSMOSDR_PYTHON_DIR}/osmosdr)
 
 ########################################################################
 # Install swig .i files for development
