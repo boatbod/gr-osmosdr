@@ -207,6 +207,25 @@ set(GR_PKG_CONF_DIR     ${GR_CONF_DIR}/${CMAKE_PROJECT_NAME}/conf.d)
 set(GR_PKG_LIBEXEC_DIR  ${GR_LIBEXEC_DIR}/${CMAKE_PROJECT_NAME})
 
 ########################################################################
+# Determine location of Python pybind3/swig interface library
+# Note: applicable only to non-packaged installs
+########################################################################
+execute_process(COMMAND python3 -c "
+import os
+import sys
+from distutils import sysconfig
+m1 = os.path.join('${CMAKE_INSTALL_PREFIX}', 'lib', 'python' + '.'.join(sys.version.split('.')[:2]), 'dist-packages')
+m2 = sysconfig.get_python_lib(plat_specific=True, prefix='${CMAKE_INSTALL_PREFIX}')
+ok2 = m2 in sys.path
+if ok2:
+	print(m2)
+else:
+	print(m1)
+	" OUTPUT_VARIABLE OSMOSDR_PYTHON_DIR OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+MESSAGE(STATUS "OSMOSDR_PYTHON_DIR has been set to \"${OSMOSDR_PYTHON_DIR}\".")
+
+########################################################################
 # On Apple only, set install name and use rpath correctly, if not already set
 ########################################################################
 if(APPLE)

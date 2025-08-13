@@ -30,4 +30,4 @@ GR_PYBIND_MAKE_OOT(osmosdr
    gr::osmosdr
    "${osmosdr_python_files}")
 
-install(TARGETS osmosdr_python DESTINATION ${GR_PYTHON_DIR}/osmosdr COMPONENT pythonapi)
+install(TARGETS osmosdr_python DESTINATION ${OSMOSDR_PYTHON_DIR}/osmosdr COMPONENT pythonapi)
