@@ -1,10 +1,10 @@
 Source: gr-osmosdr
 Section: libdevel
 Priority: optional
-Maintainer: Harald Welte <laforge@gnumonks.org>
+Maintainer: Graham Norbury <gnorbury@bondcar.com>
 Build-Depends: cmake,
                debhelper (>= 9.0.0~),
-	       dh-python,
+               dh-python,
                doxygen,
                gnuradio-dev (>=3.7.11),
                gr-fcdproplus (>=3.7.25.4b6464b-3) [!hurd-i386],
@@ -15,23 +15,20 @@ Build-Depends: cmake,
                libboost-dev,
                libboost-system-dev,
                libboost-thread-dev,
-	       libfreesrp-dev [!hurd-i386],
+               libfreesrp-dev [!hurd-i386],
                libhackrf-dev [linux-any],
                liblog4cpp5-dev,
                libmirisdr-dev [!hurd-i386],
                libosmosdr-dev [!hurd-i386],
                librtlsdr-dev [!hurd-i386],
-	       libsoapysdr-dev,
+               libsoapysdr-dev,
                libuhd-dev (>=3.10),
                pkg-config,
                python-dev,
-	       python-soapysdr,
-               swig
-X-Python-Version: >= 2.7, << 2.8
+               python-soapysdr,
+X-Python-Version: >= 3.8
 Standards-Version: 4.1.0
-Homepage: https://osmocom.org/projects/gr-osmosdr/wiki
-Vcs-Git: https://gitea.osmocom.org/sdr/gr-osmosdr
-Vcs-Browser: https://gitea.osmocom.org/sdr/gr-osmosdr
+Homepage: https://github.org/boatbod/gr-osmosdr
 
 Package: gr-osmosdr
 Architecture: any

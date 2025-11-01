@@ -306,8 +306,10 @@ int hydrasdr_source_c::work( int noutput_items,
   if ( _dev )
     running = (hydrasdr_is_streaming( _dev ) == HYDRASDR_TRUE);
 
-  if ( ! running )
+  if ( ! running ) {
+    std::cerr << "HydraSDR has unexpectedly stopped RX streaming)" << std::endl;
     return WORK_DONE;
+  }
 
   std::unique_lock<std::mutex> lock(_fifo_lock);
 
