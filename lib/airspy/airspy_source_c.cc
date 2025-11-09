@@ -206,14 +206,14 @@ airspy_source_c::~airspy_source_c ()
       ret = airspy_stop_rx( _dev );
       if ( ret != AIRSPY_SUCCESS )
       {
-        std::cerr << AIRSPY_FORMAT_ERROR(ret, "Failed to stop RX streaming") << std::endl;
+        std::cerr << AIRSPY_FORMAT_ERROR(ret, "airspy_source_c::~airspy_source_c: Failed to stop RX streaming") << std::endl;
       }
     }
 
     ret = airspy_close( _dev );
     if ( ret != AIRSPY_SUCCESS )
     {
-      std::cerr << AIRSPY_FORMAT_ERROR(ret, "Failed to close AirSpy") << std::endl;
+      std::cerr << AIRSPY_FORMAT_ERROR(ret, "airspy_source_c::~airspy_source_c: Failed to close AirSpy") << std::endl;
     }
     _dev = NULL;
   }
@@ -273,7 +273,7 @@ bool airspy_source_c::start()
 
   int ret = airspy_start_rx( _dev, _airspy_rx_callback, (void *)this );
   if ( ret != AIRSPY_SUCCESS ) {
-    std::cerr << "Failed to start RX streaming (" << ret << ")" << std::endl;
+    std::cerr << "airspy_source_c::start: Failed to start RX streaming (" << ret << ")" << std::endl;
     return false;
   }
 
@@ -287,7 +287,7 @@ bool airspy_source_c::stop()
 
   int ret = airspy_stop_rx( _dev );
   if ( ret != AIRSPY_SUCCESS ) {
-    std::cerr << "Failed to stop RX streaming (" << ret << ")" << std::endl;
+    std::cerr << "airspy_source_c::stop: Failed to stop RX streaming (" << ret << ")" << std::endl;
     return false;
   }
 
@@ -305,8 +305,10 @@ int airspy_source_c::work( int noutput_items,
   if ( _dev )
     running = (airspy_is_streaming( _dev ) == AIRSPY_TRUE);
 
-  if ( ! running )
+  if ( ! running ) {
+    std::cerr << "airspy_source_c::work: unexpectedly stopped running" << std::endl;
     return WORK_DONE;
+  }
 
   std::unique_lock<std::mutex> lock(_fifo_lock);
 
@@ -314,7 +316,11 @@ int airspy_source_c::work( int noutput_items,
   int n_samples_avail = _fifo->size();
 
   while (n_samples_avail < noutput_items) {
-    _samp_avail.wait(lock);
+    //_samp_avail.wait(lock);
+    if (_samp_avail.wait_for(lock, std::chrono::milliseconds(500)) == std::cv_status::timeout) {
+      std::cerr << "airspy_source_c::work: timeout waiting for samples" << std::endl;
+      return WORK_DONE;
+    }
     n_samples_avail = _fifo->size();
   }
 

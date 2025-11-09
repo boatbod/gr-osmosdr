@@ -207,14 +207,14 @@ hydrasdr_source_c::~hydrasdr_source_c ()
       ret = hydrasdr_stop_rx( _dev );
       if ( ret != HYDRASDR_SUCCESS )
       {
-        std::cerr << HYDRASDR_FORMAT_ERROR(ret, "Failed to stop RX streaming") << std::endl;
+        std::cerr << HYDRASDR_FORMAT_ERROR(ret, "hydrasdr_source_c::~hydrasdr_source_c: Failed to stop RX streaming") << std::endl;
       }
     }
 
     ret = hydrasdr_close( _dev );
     if ( ret != HYDRASDR_SUCCESS )
     {
-      std::cerr << HYDRASDR_FORMAT_ERROR(ret, "Failed to close HydraSDR") << std::endl;
+      std::cerr << HYDRASDR_FORMAT_ERROR(ret, "hydrasdr_source_c::~hydrasdr_source_c: Failed to close HydraSDR") << std::endl;
     }
     _dev = NULL;
   }
@@ -274,7 +274,7 @@ bool hydrasdr_source_c::start()
 
   int ret = hydrasdr_start_rx( _dev, _hydrasdr_rx_callback, (void *)this );
   if ( ret != HYDRASDR_SUCCESS ) {
-    std::cerr << "Failed to start RX streaming (" << ret << ")" << std::endl;
+    std::cerr << "hydrasdr_source_c::start: Failed to start RX streaming (" << ret << ")" << std::endl;
     return false;
   }
 
@@ -288,7 +288,7 @@ bool hydrasdr_source_c::stop()
 
   int ret = hydrasdr_stop_rx( _dev );
   if ( ret != HYDRASDR_SUCCESS ) {
-    std::cerr << "Failed to stop RX streaming (" << ret << ")" << std::endl;
+    std::cerr << "hydrasdr_source_c::stop: Failed to stop RX streaming (" << ret << ")" << std::endl;
     return false;
   }
 
@@ -307,7 +307,7 @@ int hydrasdr_source_c::work( int noutput_items,
     running = (hydrasdr_is_streaming( _dev ) == HYDRASDR_TRUE);
 
   if ( ! running ) {
-    std::cerr << "HydraSDR has unexpectedly stopped RX streaming)" << std::endl;
+    std::cerr << "hydrasdr_source_c::work: unexpectedly stopped running" << std::endl;
     return WORK_DONE;
   }
 
@@ -317,7 +317,11 @@ int hydrasdr_source_c::work( int noutput_items,
   int n_samples_avail = _fifo->size();
 
   while (n_samples_avail < noutput_items) {
-    _samp_avail.wait(lock);
+    //_samp_avail.wait(lock);
+    if (_samp_avail.wait_for(lock, std::chrono::milliseconds(500)) == std::cv_status::timeout) {
+      std::cerr << "hydrasdr_source_c::work: timeout waiting for samples" << std::endl;
+      return WORK_DONE;
+    }
     n_samples_avail = _fifo->size();
   }
 
